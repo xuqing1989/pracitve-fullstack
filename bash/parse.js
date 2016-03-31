@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var _ = require('lodash');
 var Q = require('q');
+var moment = require('moment');
 
 
 function parseLine(l, interview, interviews) {
@@ -13,7 +14,11 @@ function parseLine(l, interview, interviews) {
     var isHeader = false;
     ['Client', 'Candidate', 'Date', 'Type'].forEach(function(k) {
         if (line.startsWith(k)) {
-            interview[k] = line.split(':')[1].trim();
+            var value = line.split(':')[1].trim();
+            if(k == 'Date') {
+                value = moment(value,'MM/DD/YYYY').toDate();
+            }
+            interview[k] = value;
             isHeader = true;
         }
     });
